@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import MovieCard from './MovieCard';
-import { getPopularMovies } from '../api/tmdb';
+import { getPopularMovies, searchMovies } from '../api/tmdb';
 
-const MovieList = () => {
+const MovieList = ({ searchQuery }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadMovies = async () => {
+      setLoading(true);
       try {
-        const data = await getPopularMovies();
+        let data;
+        if (searchQuery) {
+          data = await searchMovies(searchQuery);
+        } else {
+          data = await getPopularMovies();
+        }
         setMovies(data);
       } catch (error) {
         console.error('Ошибка загрузки:', error);
@@ -19,9 +25,11 @@ const MovieList = () => {
     };
 
     loadMovies();
-  }, []);
+  }, [searchQuery]);
 
   if (loading) return <div className="loading">Загрузка...</div>;
+
+  if (movies.length === 0) return <div className="loading">Ничего не найдено</div>;
 
   return (
     <main className="movie-grid">
@@ -30,9 +38,12 @@ const MovieList = () => {
           key={movie.id}
           title={movie.title}
           year={movie.release_date?.split('-')[0] || '—'}
-          rating={movie.vote_average.toFixed(1)}
+          rating={movie.vote_average?.toFixed(1) || '—'}
           genres={movie.genre_ids || []}
-          poster={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          poster={movie.poster_path 
+            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` 
+            : 'https://via.placeholder.com/500x750?text=No+Poster'
+          }
         />
       ))}
     </main>
