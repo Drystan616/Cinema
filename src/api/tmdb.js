@@ -27,3 +27,21 @@ export const getMovieDetails = async (id) => {
   const response = await fetch(`${BASE_URL}/movie/${id}?language=ru-RU`, options);
   return await response.json();
 };
+
+export const getMoviesByYear = async (year) => {
+  const response = await fetch(
+    `${BASE_URL}/discover/movie?primary_release_year=${year}&language=ru-RU&sort_by=popularity.desc`, 
+    options
+  );
+  const data = await response.json();
+  return data.results;
+};
+
+export const getMoviesByGenre = async (genreId) => {
+  const response = await fetch(
+    `${BASE_URL}/discover/movie?with_genres=${genreId}&language=ru-RU&sort_by=popularity.desc`, 
+    options
+  );
+  const data = await response.json();
+  return data.results;
+};

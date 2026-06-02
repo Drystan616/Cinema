@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import MovieCard from './MovieCard';
-import { getPopularMovies, searchMovies } from '../api/tmdb';
+import { getPopularMovies, searchMovies, getMoviesByYear, getMoviesByGenre } from '../api/tmdb';
 
-const MovieList = ({ searchQuery }) => {
+const MovieList = ({ searchQuery, filters }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -11,11 +11,21 @@ const MovieList = ({ searchQuery }) => {
       setLoading(true);
       try {
         let data;
+        
         if (searchQuery) {
+          // Поиск по названию
           data = await searchMovies(searchQuery);
+        } else if (filters.year) {
+          // Фильтр по году
+          data = await getMoviesByYear(filters.year);
+        } else if (filters.genre) {
+          // Фильтр по жанру
+          data = await getMoviesByGenre(filters.genre);
         } else {
+          // Популярные фильмы
           data = await getPopularMovies();
         }
+        
         setMovies(data);
       } catch (error) {
         console.error('Ошибка загрузки:', error);
@@ -25,15 +35,21 @@ const MovieList = ({ searchQuery }) => {
     };
 
     loadMovies();
-  }, [searchQuery]);
+  }, [searchQuery, filters.year, filters.genre]);
+
+  // Фильтрация по рейтингу (локально)
+  const filteredMovies = movies.filter(movie => {
+    const matchRating = !filters.rating || movie.vote_average >= Number(filters.rating);
+    return matchRating;
+  });
 
   if (loading) return <div className="loading">Загрузка...</div>;
 
-  if (movies.length === 0) return <div className="loading">Ничего не найдено</div>;
+  if (filteredMovies.length === 0) return <div className="loading">Ничего не найдено</div>;
 
   return (
     <main className="movie-grid">
-      {movies.map(movie => (
+      {filteredMovies.map(movie => (
         <MovieCard
           key={movie.id}
           title={movie.title}
