@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Header = ({ onSearch }) => {
+const Header = ({ onSearch, onShowFavorites, onShowHome }) => {
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e) => {
@@ -12,7 +12,7 @@ const Header = ({ onSearch }) => {
 
   return (
     <header className="header">
-      <div className="logo">
+      <div className="logo" onClick={onShowHome} style={{ cursor: 'pointer' }}>
         <i className="fas fa-film"></i>
         <span>MovieCatalog</span>
       </div>
@@ -26,8 +26,8 @@ const Header = ({ onSearch }) => {
         <button type="submit"><i className="fas fa-search"></i></button>
       </form>
       <nav className="nav">
-        <a href="#" className="active">Главная</a>
-        <a href="#">Избранное</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); onShowHome(); }}>Главная</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); onShowFavorites(); }}>Избранное</a>
       </nav>
     </header>
   );
