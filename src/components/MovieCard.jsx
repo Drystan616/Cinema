@@ -12,10 +12,11 @@ const getGenreName = (id) => {
   return genres[id] || '';
 };
 
-const MovieCard = ({ movie, isFavorite, onAddFavorite, onRemoveFavorite }) => {
+const MovieCard = ({ movie, isFavorite, onAddFavorite, onRemoveFavorite, onClick }) => {
   const { id, title, release_date, vote_average, genre_ids, poster_path } = movie;
 
-  const handleFavoriteClick = () => {
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
     if (isFavorite(id)) {
       onRemoveFavorite(id);
     } else {
@@ -26,7 +27,7 @@ const MovieCard = ({ movie, isFavorite, onAddFavorite, onRemoveFavorite }) => {
   const genreNames = genre_ids?.map(id => getGenreName(id)).filter(Boolean).join(', ') || '—';
 
   return (
-    <article className="movie-card">
+    <article className="movie-card" onClick={() => onClick(id)} style={{ cursor: 'pointer' }}>
       <div className="movie-poster">
         <img 
           src={poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : 'https://via.placeholder.com/500x750?text=No+Poster'} 

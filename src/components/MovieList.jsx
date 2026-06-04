@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MovieCard from './MovieCard';
 import { getPopularMovies, searchMovies, getMoviesByYear, getMoviesByGenre } from '../api/tmdb';
 
-const MovieList = ({ searchQuery, filters, onAddFavorite, onRemoveFavorite, isFavorite }) => {
+const MovieList = ({ searchQuery, filters, onAddFavorite, onRemoveFavorite, isFavorite, onMovieClick }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,6 +48,7 @@ const MovieList = ({ searchQuery, filters, onAddFavorite, onRemoveFavorite, isFa
           isFavorite={isFavorite}
           onAddFavorite={onAddFavorite}
           onRemoveFavorite={onRemoveFavorite}
+          onClick={onMovieClick}
         />
       ))}
     </main>

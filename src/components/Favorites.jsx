@@ -1,7 +1,7 @@
 import React from 'react';
 import MovieCard from './MovieCard';
 
-const Favorites = ({ favorites, onRemove }) => {
+const Favorites = ({ favorites, onRemove, onMovieClick }) => {
   if (favorites.length === 0) {
     return (
       <div className="loading" style={{ minHeight: '50vh' }}>
@@ -20,6 +20,7 @@ const Favorites = ({ favorites, onRemove }) => {
           isFavorite={() => true}
           onAddFavorite={() => {}}
           onRemoveFavorite={onRemove}
+          onClick={onMovieClick}
         />
       ))}
     </main>
