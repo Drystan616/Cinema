@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { getMovieDetails } from '../api/tmdb';
+import { getMovieDetails, getMovieCredits } from '../api/tmdb';
 
 const MovieDetail = ({ movieId, onBack }) => {
   const [movie, setMovie] = useState(null);
+  const [cast, setCast] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadMovie = async () => {
       try {
-        const data = await getMovieDetails(movieId);
-        setMovie(data);
+        const [movieData, castData] = await Promise.all([
+          getMovieDetails(movieId),
+          getMovieCredits(movieId)
+        ]);
+        setMovie(movieData);
+        setCast(castData.slice(0, 10)); // Первые 10 актёров
       } catch (error) {
         console.error('Ошибка загрузки:', error);
       } finally {
@@ -58,7 +63,23 @@ const MovieDetail = ({ movieId, onBack }) => {
           
           <div className="detail-cast">
             <h3>В ролях:</h3>
-            <p>{movie.credits?.cast?.slice(0, 5).map(c => c.name).join(', ') || 'Информация недоступна'}</p>
+            {cast.length > 0 ? (
+              <div className="cast-list">
+                {cast.map(actor => (
+                  <div key={actor.id} className="cast-item">
+                    <img 
+                      src={actor.profile_path ? `https://image.tmdb.org/t/p/w200${actor.profile_path}` : 'https://via.placeholder.com/100x150?text=No+Photo'} 
+                      alt={actor.name}
+                      className="cast-photo"
+                    />
+                    <p className="cast-name">{actor.name}</p>
+                    <p className="cast-character">{actor.character}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>Информация недоступна</p>
+            )}
           </div>
         </div>
       </div>

@@ -45,3 +45,9 @@ export const getMoviesByGenre = async (genreId) => {
   const data = await response.json();
   return data.results;
 };
+
+export const getMovieCredits = async (id) => {
+  const response = await fetch(`${BASE_URL}/movie/${id}/credits?language=ru-RU`, options);
+  const data = await response.json();
+  return data.cast;
+};
