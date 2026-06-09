@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getMovieDetails, getMovieCredits } from '../api/tmdb';
 
-const MovieDetail = ({ movieId, onBack }) => {
+const MovieDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,11 +13,11 @@ const MovieDetail = ({ movieId, onBack }) => {
     const loadMovie = async () => {
       try {
         const [movieData, castData] = await Promise.all([
-          getMovieDetails(movieId),
-          getMovieCredits(movieId)
+          getMovieDetails(id),
+          getMovieCredits(id)
         ]);
         setMovie(movieData);
-        setCast(castData.slice(0, 10)); // Первые 10 актёров
+        setCast(castData.slice(0, 10));
       } catch (error) {
         console.error('Ошибка загрузки:', error);
       } finally {
@@ -23,7 +26,7 @@ const MovieDetail = ({ movieId, onBack }) => {
     };
 
     loadMovie();
-  }, [movieId]);
+  }, [id]);
 
   if (loading) return <div className="loading">Загрузка...</div>;
   if (!movie) return <div className="loading">Фильм не найден</div>;
@@ -33,7 +36,7 @@ const MovieDetail = ({ movieId, onBack }) => {
 
   return (
     <div className="movie-detail">
-      <button className="back-btn" onClick={onBack}>
+      <button className="back-btn" onClick={() => navigate(-1)}>
         <i className="fas fa-arrow-left"></i> Назад
       </button>
       

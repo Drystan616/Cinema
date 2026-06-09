@@ -8,19 +8,19 @@ const options = {
   }
 };
 
-export const getPopularMovies = async () => {
-  const response = await fetch(`${BASE_URL}/movie/popular?language=ru-RU`, options);
+export const getPopularMovies = async (page = 1) => {
+  const response = await fetch(`${BASE_URL}/movie/popular?language=ru-RU&page=${page}`, options);
   const data = await response.json();
-  return data.results;
+  return data;
 };
 
-export const searchMovies = async (query) => {
+export const searchMovies = async (query, page = 1) => {
   const response = await fetch(
-    `${BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=ru-RU`, 
+    `${BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=ru-RU&page=${page}`, 
     options
   );
   const data = await response.json();
-  return data.results;
+  return data;
 };
 
 export const getMovieDetails = async (id) => {
@@ -28,22 +28,22 @@ export const getMovieDetails = async (id) => {
   return await response.json();
 };
 
-export const getMoviesByYear = async (year) => {
+export const getMoviesByYear = async (year, page = 1) => {
   const response = await fetch(
-    `${BASE_URL}/discover/movie?primary_release_year=${year}&language=ru-RU&sort_by=popularity.desc`, 
+    `${BASE_URL}/discover/movie?primary_release_year=${year}&language=ru-RU&sort_by=popularity.desc&page=${page}`, 
     options
   );
   const data = await response.json();
-  return data.results;
+  return data;
 };
 
-export const getMoviesByGenre = async (genreId) => {
+export const getMoviesByGenre = async (genreId, page = 1) => {
   const response = await fetch(
-    `${BASE_URL}/discover/movie?with_genres=${genreId}&language=ru-RU&sort_by=popularity.desc`, 
+    `${BASE_URL}/discover/movie?with_genres=${genreId}&language=ru-RU&sort_by=popularity.desc&page=${page}`, 
     options
   );
   const data = await response.json();
-  return data.results;
+  return data;
 };
 
 export const getMovieCredits = async (id) => {

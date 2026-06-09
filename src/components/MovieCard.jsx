@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const getGenreName = (id) => {
   const genres = {
@@ -12,7 +13,8 @@ const getGenreName = (id) => {
   return genres[id] || '';
 };
 
-const MovieCard = ({ movie, isFavorite, onAddFavorite, onRemoveFavorite, onClick }) => {
+const MovieCard = ({ movie, isFavorite, onAddFavorite, onRemoveFavorite }) => {
+  const navigate = useNavigate();
   const { id, title, release_date, vote_average, genre_ids, poster_path } = movie;
 
   const handleFavoriteClick = (e) => {
@@ -24,10 +26,14 @@ const MovieCard = ({ movie, isFavorite, onAddFavorite, onRemoveFavorite, onClick
     }
   };
 
+  const handleClick = () => {
+    navigate(`/movie/${id}`);
+  };
+
   const genreNames = genre_ids?.map(id => getGenreName(id)).filter(Boolean).join(', ') || '—';
 
   return (
-    <article className="movie-card" onClick={() => onClick(id)} style={{ cursor: 'pointer' }}>
+    <article className="movie-card" onClick={handleClick} style={{ cursor: 'pointer' }}>
       <div className="movie-poster">
         <img 
           src={poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : 'https://via.placeholder.com/500x750?text=No+Poster'} 
